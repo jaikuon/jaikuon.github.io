@@ -1,0 +1,35 @@
+table, td, tr{
+    text-align: center;
+   border: 1px white; 
+}
+body{
+    color: aliceblue;
+    background-color: black;
+    
+    text-align: center;
+    display: flexbox;
+
+}
+table {
+     margin: auto;
+     margin-top: auto;
+     margin-bottom: auto;
+     color: aliceblue;
+     border-color: whitesmoke;
+}
+
+.construction {
+    display: flex;
+    flex: auto;
+}
+
+.index{
+    text-align: center;
+}
+
+.contact{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

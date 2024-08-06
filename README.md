@@ -1,2 +1,4 @@
 # jaikuon.github.io
-personal site
+
+
+my own electric world
