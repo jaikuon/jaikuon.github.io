@@ -8,8 +8,18 @@ body{
     
     text-align: center;
     display: flexbox;
+    
 
 }
+
+.listtop {
+    text-align: center;
+  }
+.listtop > ul {
+    display: inline-block;
+}
+
+
 table {
      margin: auto;
      margin-top: auto;
@@ -32,4 +42,9 @@ table {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+
+ul {
+    font-weight: 900;
 }
