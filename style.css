@@ -8,7 +8,7 @@ body{
     
     text-align: center;
     display: flexbox;
-    
+    font-family: font;
 
 }
 
@@ -47,4 +47,9 @@ table {
 
 ul {
     font-weight: 900;
+}
+
+@font-face { 
+    font-family: font;
+  src: url(image/fonts/roboto/static/RobotoMono-Regular.ttf);
 }
