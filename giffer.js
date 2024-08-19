@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function() {
         "cs1.gif",
         "cs2.gif",
         "cs3.gif",
-        "cs4.gif",
         "fma1.gif",
         "fma2.gif",
         "fma3.gif",
