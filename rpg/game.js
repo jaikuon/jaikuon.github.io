@@ -3,6 +3,7 @@ const FINAL_SHOWDOWN_ROUND = 20;
 let players = [];
 let roundCounter = 1;
 let gameInProgress = false;
+let deathLog = [];
 
 class Item {
     constructor(name, effects) {
@@ -125,10 +126,11 @@ function calculateEventProbabilities(player, totalTraps, totalPlayers, roundCoun
         'trap fall': Math.max(0, totalTraps * 0.05 - player.stats['INT'] * 0.025),
         'sponsorship': 0.1 + player.stats['CHA'] * 0.025,
         'alliance': 0.1 + player.stats['CHA'] * 0.025,
-        'alliance break': 0.05 + (player.alliances.size / totalPlayers) * 0.15
+        'alliance break': 0.1 + (player.alliances.size / totalPlayers) * 0.05
     };
 
-    if (roundCounter >= FINAL_SHOWDOWN_ROUND) {
+    // Adjust probabilities for the final showdown or when 5 or fewer players are left
+    if (roundCounter >= FINAL_SHOWDOWN_ROUND || totalPlayers <= 5) {
         baseProbabilities['neutral'] = 0.4;
         baseProbabilities['item'] = 0.1;
         baseProbabilities['combat'] = 0.4;
@@ -191,7 +193,7 @@ function executeEvent(player, players, basicItemsByStat, roundCounter) {
             player.stats.HP -= 4;
             logMessage(`${player.name} falls into a trap and loses 4 HP. Current HP: ${player.stats.HP}`);
             if (player.stats.HP <= 0) {
-                handlePlayerDeath(player, players);
+                handlePlayerDeath(player, players, 'a trap');
             }
             break;
         case 'sponsorship':
@@ -258,12 +260,13 @@ function handleCombatEvent(player, eligibleOpponents, players) {
     logMessage(`${opponent.name}'s HP changed by -${damage}. Current HP: ${opponent.stats['HP']}`);
 
     if (opponent.stats['HP'] <= 0) {
-        handlePlayerDeath(opponent, players);
+        handlePlayerDeath(opponent, players, player.name);
     }
 }
 
-function handlePlayerDeath(player, players) {
+function handlePlayerDeath(player, players, killer) {
     logMessage(`${player.name}'s HP reached zero. ${player.name} is dead.`);
+    deathLog.push({ name: player.name, round: roundCounter, killer: killer });
     players.splice(players.indexOf(player), 1);
     players.forEach(p => p.alliances.delete(player.name));
 }
@@ -311,8 +314,9 @@ function executeSingleRound(players, basicItemsByStat, roundCounter) {
         executeEvent(player, players, basicItemsByStat, roundCounter);
     });
 
-    // Auto-break alliances during final showdown
-    if (roundCounter >= FINAL_SHOWDOWN_ROUND) {
+    // Auto-break alliances and start final showdown if conditions are met
+    if (players.length <= 5 || roundCounter >= FINAL_SHOWDOWN_ROUND) {
+        logMessage("\n--- Final Showdown! ---");
         players.forEach(player => player.breakAllAlliances());
     }
 
@@ -328,8 +332,16 @@ function executeSingleRound(players, basicItemsByStat, roundCounter) {
             logMessage("No players remaining.");
         }
         gameInProgress = false;
+        displayDeathLog();
         document.getElementById('controls').style.display = 'none'; // Hide play round button
     }
+}
+
+function displayDeathLog() {
+    logMessage("\n--- Death Log ---");
+    deathLog.forEach(entry => {
+        logMessage(`${entry.name} died in Round ${entry.round}, killed by ${entry.killer}.`);
+    });
 }
 
 function startGame() {
@@ -340,6 +352,7 @@ function startGame() {
     }
 
     players = [];
+    deathLog = []; // Reset death log at the start of the game
     for (let i = 0; i < numPlayers; i++) {
         let playerName = prompt("Enter player's name:");
         if (playerName) {
@@ -363,10 +376,6 @@ function playRound() {
     }
 
     if (players.length > 1) {
-        if (roundCounter === FINAL_SHOWDOWN_ROUND) {
-            logMessage("\n--- Final Showdown! ---");
-        }
-
         executeSingleRound(players, createBasicItems(), roundCounter);
         roundCounter++;
     }
@@ -377,6 +386,7 @@ function resetGame() {
     players = [];
     roundCounter = 1;
     totalTraps = 0;
+    deathLog = [];
     document.getElementById('game-log').innerHTML = '';
     document.getElementById('player-stats-container').innerHTML = '';
     document.getElementById('controls').style.display = 'none'; // Hide play round and reset buttons
