@@ -11,17 +11,17 @@ body{
     font-family: font;
     align-items:center;
     flex-direction: column;
-    margin-top: 25%;
+    
     
 
 }
 
 .listtop {
     text-align: center;
-  }
-.listtop > ul {
     display: inline-block;
-}
+    font-weight: bolder;
+  }
+
 
 
 table {
@@ -39,7 +39,6 @@ table {
 
 .index{
     text-align: center;
-    margin-top: 25%;
 }
 
 .contact{
@@ -60,20 +59,3 @@ ul {
 }
 
 
-.box {
-    width: 300px;
-    padding: 20px;
-    margin: 10px 0;
-    text-align: center;
-    border-radius: 10px;
-    color: rgb(0, 0, 0);
-    font-size: 20px;
-    transition: transform 0.2s;
-    background-color: rgb(255, 255, 255);
-}
-
-
-
-.box:hover {
-    transform: scale(1.05);
-}
